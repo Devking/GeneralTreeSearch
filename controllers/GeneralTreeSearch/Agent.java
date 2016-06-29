@@ -1,6 +1,6 @@
 // Code written by Wells Lucas Santo
 
-package controllers.GenericTreeSearch;
+package controllers.GeneralTreeSearch;
 
 import core.game.Observation;
 import core.game.StateObservation;
@@ -9,7 +9,7 @@ import ontology.Types;
 import tools.ElapsedCpuTimer;
 
 public class Agent extends AbstractPlayer {
-    
+
     GTSAlgo algo;
 
     // Initialize the Generic Tree Search, manually set which file to read from

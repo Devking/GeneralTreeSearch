@@ -1,5 +1,5 @@
 // Code written by Wells Lucas Santo
-package controllers.GenericTreeSearch;
+package controllers.GeneralTreeSearch;
 
 import core.game.Observation;
 import core.game.StateObservation;

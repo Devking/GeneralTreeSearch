@@ -1,5 +1,5 @@
 // Code written by Wells Lucas Santo
-package controllers.GenericTreeSearch;
+package controllers.GeneralTreeSearch;
 
 public class GTSParams {
     public static enum EXPLORATION     { FIRST, HIGH, LOW, LAST, UCT };

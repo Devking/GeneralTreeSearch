@@ -1,5 +1,5 @@
 // Code written by Wells Lucas Santo
-package controllers.GenericTreeSearch;
+package controllers.GeneralTreeSearch;
 
 import  core.game.Observation;
 import  core.game.StateObservation;
@@ -70,7 +70,7 @@ public class GTSAlgo {
         }
     }
 
-    // 
+    //
 
     // Debugging, to make sure the right attributes were set
     void printParameters () {
@@ -171,7 +171,7 @@ public class GTSAlgo {
             // Think about this one: won't low reward just pick the most recently added
             // node in the tree, since it's initialized to a reward of 0?
             //**// Need to initialize leaves with values!
-            case LOW: 
+            case LOW:
                 int lowIndex = 0;
                 double lowReward = states.get(lowIndex).getReward();
                 for (int i = 0; i < states.size(); i++) {

@@ -13,7 +13,7 @@ public class GTSRunner {
         String sampleMCTSController = "controllers.sampleMCTS.Agent";
         String sampleOLMCTSController = "controllers.sampleOLMCTS.Agent";
         String sampleGAController = "controllers.sampleGA.Agent";
-        String GTSController = "controllers.GenericTreeSearch.Agent";
+        String GTSController = "controllers.GeneralTreeSearch.Agent";
 
         //Available games:
         String gamesPath = "examples/gridphysics/";
