@@ -17,10 +17,9 @@ public class GTSRunner {
 
         //Available games:
         String gamesPath = "examples/gridphysics/";
-        String games[] = new String[]{};
-
+        
         //Training Set 1 (2015; CIG 2014)
-        games = new String[]{"aliens", "boulderdash", "butterflies", "chase", "frogs",
+        String[] games = new String[]{"aliens", "boulderdash", "butterflies", "chase", "frogs",
                  "missilecommand", "portals", "sokoban", "survivezombies", "zelda"};
 
         //Training Set 2 (2015; Validation CIG 2014)

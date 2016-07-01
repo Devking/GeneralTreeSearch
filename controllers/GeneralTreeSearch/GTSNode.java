@@ -1,14 +1,8 @@
 // Code written by Wells Lucas Santo
 package controllers.GeneralTreeSearch;
 
-import core.game.Observation;
 import core.game.StateObservation;
-import core.player.AbstractPlayer;
 import ontology.Types;
-import tools.ElapsedCpuTimer;
-
-import java.util.ArrayList;
-import java.io.*;
 
 // Nodes in the decision tree
 public class GTSNode {
@@ -19,7 +13,9 @@ public class GTSNode {
         totalValue = 0;
         visitCount = 0;
         parent = par;
-        children = new GTSNode [thisState.getAvailableActions().size()];
+        if(s != null){
+        	children = new GTSNode [thisState.getAvailableActions().size()];
+        }
         if (par != null)
             depth = par.depth+1;
         else

@@ -2,7 +2,6 @@
 
 package controllers.GeneralTreeSearch;
 
-import core.game.Observation;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
@@ -17,7 +16,7 @@ public class Agent extends AbstractPlayer {
         // String filename = "TSDLAlgorithms/BFS.txt";
         // String filename = "TSDLAlgorithms/DFS.txt";
         // String filename = "TSDLAlgorithms/Astar.txt";
-        String filename = "TSDLAlgorithms/MCTS.txt";
+        String filename = "src/controllers/GeneralTreeSearch/TSDLAlgorithms/MCTS.txt";
         algo = new GTSAlgo(filename);
     }
 

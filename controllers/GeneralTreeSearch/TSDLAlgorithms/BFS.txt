@@ -3,6 +3,6 @@ Expansion: ALL
 Removal: YES
 Simulation: NONE
 Evaluation: POINTS
-Backpropagation: HIGH
+Backpropagation: MAX
 Selection: HIGH
 Depth Limit: 10

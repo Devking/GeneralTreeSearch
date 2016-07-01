@@ -3,6 +3,6 @@ Expansion: ALL
 Removal: YES
 Simulation: NONE
 Evaluation: DISTANCE
-Backpropagation: LOW
+Backpropagation: MIN
 Selection: LOW
 Depth Limit: 10
