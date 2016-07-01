@@ -729,7 +729,7 @@ public class GTSAlgo {
 	// 6. Backprop: High, Low, Increment
 	///////////////////////////////////////////////////////////////////////////////////
     void backprop(ArrayList<GTSNode> expandedNodes, ArrayList<Double> rewards){
-    	for(int i=0; i<expandedNodes.size(); i++){
+    	for(int i=0; i<rewards.size(); i++){
     		GTSNode currentNode = expandedNodes.get(i);
     		double reward = rewards.get(i);
     		// Backprop all the way to the root
