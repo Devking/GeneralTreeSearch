@@ -10,6 +10,7 @@ import  java.util.ArrayList;
 import  java.io.*;
 import  java.util.Random;
 
+import controllers.GeneralTreeSearch.GTSParams.SIMULATION;
 import controllers.Heuristics.SimpleStateHeuristic;
 import controllers.Heuristics.WinScoreHeuristic;
 
@@ -31,9 +32,12 @@ public class GTSAlgo {
     GTSParams.BACKPROPAGATION backprop;
     GTSParams.SELECTION       selection;
     int                       depthLimit;
+    int						  simulationLimit;
 
     public static double epsilon = 1e-6;
     public static double egreedyEpsilon = 0.05;
+    public static double simulationTimeLimit = 4;
+    public static double totalTimeLimit = 5;
 
     // Constructor: GTS Parameter Initialization
     public GTSAlgo (String filename) {
@@ -54,14 +58,15 @@ public class GTSAlgo {
                     // Assumption: There's a colon in each line
                     String info [] = line.split(": ");
                     switch (info[0]) {
-                        case "Exploration":     exploration = GTSParams.EXPLORATION.valueOf(info[1]);     break;
-                        case "Expansion":       expansion   = GTSParams.EXPANSION.valueOf(info[1]);       break;
-                        case "Removal":         removal     = GTSParams.REMOVAL.valueOf(info[1]);         break;
-                        case "Simulation":      simulation  = GTSParams.SIMULATION.valueOf(info[1]);      break;
-                        case "Evaluation":      evaluation  = GTSParams.EVALUATION.valueOf(info[1]);      break;
-                        case "Backpropagation": backprop    = GTSParams.BACKPROPAGATION.valueOf(info[1]); break;
-                        case "Selection":       selection   = GTSParams.SELECTION.valueOf(info[1]);       break;
-                        case "Depth Limit":     depthLimit  = Integer.parseInt(info[1]);                  break;
+                        case "Exploration":      exploration 	 = GTSParams.EXPLORATION.valueOf(info[1]);     break;
+                        case "Expansion":        expansion   	 = GTSParams.EXPANSION.valueOf(info[1]);       break;
+                        case "Removal":          removal     	 = GTSParams.REMOVAL.valueOf(info[1]);         break;
+                        case "Simulation":       simulation  	 = GTSParams.SIMULATION.valueOf(info[1]);      break;
+                        case "Evaluation":       evaluation  	 = GTSParams.EVALUATION.valueOf(info[1]);      break;
+                        case "Backpropagation":  backprop    	 = GTSParams.BACKPROPAGATION.valueOf(info[1]); break;
+                        case "Selection":        selection   	 = GTSParams.SELECTION.valueOf(info[1]);       break;
+                        case "Depth Limit":      depthLimit  	 = Integer.parseInt(info[1]);                  break;
+                        case "Simulation Limit": simulationLimit = Integer.parseInt(info[1]);                  break;
                         default: break;
                     }
                 }
@@ -86,6 +91,7 @@ public class GTSAlgo {
         System.out.println("(6) Backpropagation Type: " + backprop);
         System.out.println("(7) Selection       Type: " + selection);
         System.out.println("(8) Depth Limit         : " + depthLimit);
+        System.out.println("(9) Simulation Limit         : " + simulationLimit);
         System.out.println("--------------------------------");
     }
 
@@ -107,7 +113,7 @@ public class GTSAlgo {
         nodes.add(root);
 
         // While there's still time, explore the tree using GTS
-        while (elapsedTimer.remainingTimeMillis() > 3.0) {
+        while (elapsedTimer.remainingTimeMillis() > totalTimeLimit) {
             // Check if there are still states to explore
             if (nodes.size() == 0) {
                 System.out.println("No more states (we've evaluated all"
@@ -627,10 +633,10 @@ public class GTSAlgo {
 			// These simulated nodes are *not* added to the ArrayList
 			switch (simulation) {
 				case RANDOM: default:
-					int finalDepth = currentNode.getDepth();
+					int finalDepth = 0;
 					Random random = new Random();
-					while (finalDepth < depthLimit &&
-						elapsedTimer.remainingTimeMillis() > 5.0 && !finalState.isGameOver()) {
+					while (finalDepth < simulationLimit &&
+						elapsedTimer.remainingTimeMillis() > simulationTimeLimit && !finalState.isGameOver()) {
 						int actionNo = random.nextInt(finalState.getAvailableActions().size());
 						finalState.advance(finalState.getAvailableActions().get(actionNo));
 						finalDepth++;
@@ -638,7 +644,7 @@ public class GTSAlgo {
 					// System.out.println("Simulation to depth: " + finalDepth);
 					break;
 				case SAME:
-					finalDepth = currentNode.getDepth();
+					finalDepth = 0;
 					random = new Random();
 					int actionNo = -1;
 					if(currentNode.parent != null){
@@ -652,16 +658,16 @@ public class GTSAlgo {
 					else{
 						actionNo = random.nextInt(finalState.getAvailableActions().size());
 					}
-					while (finalDepth < depthLimit &&
-						elapsedTimer.remainingTimeMillis() > 5.0 && !finalState.isGameOver()) {
+					while (finalDepth < simulationLimit &&
+						elapsedTimer.remainingTimeMillis() > simulationTimeLimit && !finalState.isGameOver()) {
 						finalState.advance(finalState.getAvailableActions().get(actionNo));
 						finalDepth++;
 					}
 					break;
 				case NIL:
-					finalDepth = currentNode.getDepth();
-					while (finalDepth < depthLimit &&
-						elapsedTimer.remainingTimeMillis() > 5.0 && !finalState.isGameOver()) {
+					finalDepth = 0;
+					while (finalDepth < simulationLimit &&
+						elapsedTimer.remainingTimeMillis() > simulationTimeLimit && !finalState.isGameOver()) {
 						finalState.advance(Types.ACTIONS.ACTION_NIL);
 						finalDepth++;
 					}
@@ -685,7 +691,7 @@ public class GTSAlgo {
 		for(int i=0; i<expandedNodes.size(); i++){
 			GTSNode tempNode = expandedNodes.get(i);
 			StateObservation tempState = finalStates.get(i);
-			if (tempNode.getDepth() >= depthLimit || tempState.isGameOver()) {
+			if (simulation != SIMULATION.NONE || (depthLimit > 0 && tempNode.getDepth() >= depthLimit) || tempState.isGameOver()) {
 				double reward = 0;
 				switch (evaluation) {
 					// Points: Reward is just the score
@@ -755,8 +761,8 @@ public class GTSAlgo {
 						currentNode.setRewardMax(reward);
 						break;
 				}
-					currentNode.incrementVisitCount();
-					currentNode = currentNode.parent;
+				currentNode.incrementVisitCount();
+				currentNode = currentNode.parent;
 			}
     	}
     }

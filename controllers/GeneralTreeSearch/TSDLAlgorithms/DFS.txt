@@ -6,3 +6,4 @@ Evaluation: POINTS
 Backpropagation: MAX
 Selection: HIGH
 Depth Limit: 4
+Simulation Limit: 0

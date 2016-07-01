@@ -5,4 +5,5 @@ Simulation: RANDOM
 Evaluation: WINLOSSPOINTS
 Backpropagation: INCREMENT
 Selection: MOSTVISITS
-Depth Limit: 10
+Depth Limit: -1
+Simulation Limit: 10

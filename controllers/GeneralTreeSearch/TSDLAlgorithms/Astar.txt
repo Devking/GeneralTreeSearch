@@ -6,3 +6,4 @@ Evaluation: DISTANCE
 Backpropagation: MIN
 Selection: LOW
 Depth Limit: 10
+Simulation Limit: 0
