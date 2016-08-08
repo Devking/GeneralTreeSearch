@@ -2,6 +2,7 @@ package core.competition;
 
 import core.ArcadeMachine;
 import core.player.AbstractPlayer;
+import tools.GameResult;
 
 import java.util.Random;
 
@@ -27,7 +28,7 @@ public class AgentExecutor {
 
         int seed = new Random().nextInt();
 
-        double gameScore = ArcadeMachine.runOneGame(map, level, false, playerClassString, action_file, seed);
+        GameResult gameResult = ArcadeMachine.runOneGame(map, level, false, playerClassString, action_file, seed);
         //System.out.println(gameScore);
     }
 }

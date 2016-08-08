@@ -5,7 +5,9 @@ import core.game.Game;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
+import ontology.Types.WINNER;
 import tools.ElapsedCpuTimer;
+import tools.GameResult;
 import tools.StatSummary;
 
 import java.io.BufferedReader;
@@ -31,7 +33,7 @@ public class ArcadeMachine
      * @param game_file game description file.
      * @param level_file file with the level to be played.
      */
-    public static double playOneGame(String game_file, String level_file, String actionFile, int randomSeed)
+    public static GameResult playOneGame(String game_file, String level_file, String actionFile, int randomSeed)
     {
         String agentName = "controllers.human.Agent";
         boolean visuals = true;
@@ -47,7 +49,7 @@ public class ArcadeMachine
      * @param actionFile filename of the file where the actions of this player, for this game, should be recorded.
      * @param randomSeed sampleRandom seed for the sampleRandom generator.
      */
-    public static double runOneGame(String game_file, String level_file, boolean visuals,
+    public static GameResult runOneGame(String game_file, String level_file, boolean visuals,
                                     String agentName, String actionFile, int randomSeed)
     {
         VGDLFactory.GetInstance().init(); //This always first thing to do.
@@ -71,7 +73,7 @@ public class ArcadeMachine
             toPlay.disqualify();
 
             //Get the score for the result.
-            return toPlay.handleResult();
+            return new GameResult(toPlay.getWinner() == WINNER.PLAYER_WINS, toPlay.handleResult(), toPlay.getGameTick(), true);
 
         }
 
@@ -85,7 +87,7 @@ public class ArcadeMachine
         //Finally, when the game is over, we need to tear the player down.
         ArcadeMachine.tearPlayerDown(player);
 
-        return score;
+        return new GameResult(toPlay.getWinner() == WINNER.PLAYER_WINS, score, toPlay.getGameTick(), false);
     }
 
 

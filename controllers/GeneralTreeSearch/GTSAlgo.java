@@ -42,11 +42,11 @@ public class GTSAlgo {
     // Constructor: GTS Parameter Initialization
     public GTSAlgo (String filename) {
         initParameters(filename);
-        printParameters();
+        //printParameters();
     }
 
     // Read TSDL file to initialize parameters
-    //**// Will necessarily crash if invalid parameter is given
+    // Will necessarily crash if invalid parameter is given
     void initParameters (String filename) {
         try {
             File myFile = new File(filename);
@@ -56,21 +56,22 @@ public class GTSAlgo {
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
                     // Assumption: There's a colon in each line
-                    String info [] = line.split(": ");
+                    String info [] = line.split(":");
                     switch (info[0]) {
-                        case "Exploration":      exploration 	 = GTSParams.EXPLORATION.valueOf(info[1]);     break;
-                        case "Expansion":        expansion   	 = GTSParams.EXPANSION.valueOf(info[1]);       break;
-                        case "Removal":          removal     	 = GTSParams.REMOVAL.valueOf(info[1]);         break;
-                        case "Simulation":       simulation  	 = GTSParams.SIMULATION.valueOf(info[1]);      break;
-                        case "Evaluation":       evaluation  	 = GTSParams.EVALUATION.valueOf(info[1]);      break;
-                        case "Backpropagation":  backprop    	 = GTSParams.BACKPROPAGATION.valueOf(info[1]); break;
-                        case "Selection":        selection   	 = GTSParams.SELECTION.valueOf(info[1]);       break;
-                        case "Depth Limit":      depthLimit  	 = Integer.parseInt(info[1]);                  break;
-                        case "Simulation Limit": simulationLimit = Integer.parseInt(info[1]);                  break;
+                        case "Exploration":      exploration 	 = GTSParams.EXPLORATION.valueOf(info[1].trim());     break;
+                        case "Expansion":        expansion   	 = GTSParams.EXPANSION.valueOf(info[1].trim());       break;
+                        case "Removal":          removal     	 = GTSParams.REMOVAL.valueOf(info[1].trim());         break;
+                        case "Simulation":       simulation  	 = GTSParams.SIMULATION.valueOf(info[1].trim());      break;
+                        case "Evaluation":       evaluation  	 = GTSParams.EVALUATION.valueOf(info[1].trim());      break;
+                        case "Backpropagation":  backprop    	 = GTSParams.BACKPROPAGATION.valueOf(info[1].trim()); break;
+                        case "Selection":        selection   	 = GTSParams.SELECTION.valueOf(info[1].trim());       break;
+                        case "Depth Limit":      depthLimit  	 = Integer.parseInt(info[1].trim());                  break;
+                        case "Simulation Limit": simulationLimit = Integer.parseInt(info[1].trim());                  break;
                         default: break;
                     }
                 }
             }
+            reader.close();
         // Quit the program if the file is invalid or nonexistant
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1062,9 +1063,9 @@ public class GTSAlgo {
                 break;
         }
 
-        System.out.println("------------------");
-        this.printTree(root);
-        System.out.println("------------------");
+//        System.out.println("------------------");
+//        this.printTree(root);
+//        System.out.println("------------------");
         return root.thisState.getAvailableActions().get(action);
     }
 

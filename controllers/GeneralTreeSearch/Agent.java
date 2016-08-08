@@ -8,15 +8,16 @@ import ontology.Types;
 import tools.ElapsedCpuTimer;
 
 public class Agent extends AbstractPlayer {
-
+	public static String filename;
+	
     GTSAlgo algo;
 
     // Initialize the Generic Tree Search, manually set which file to read from
     public Agent (StateObservation so, ElapsedCpuTimer elapsedTimer) {
-        // String filename = "TSDLAlgorithms/BFS.txt";
-        // String filename = "TSDLAlgorithms/DFS.txt";
-        // String filename = "TSDLAlgorithms/Astar.txt";
-        String filename = "src/controllers/GeneralTreeSearch/TSDLAlgorithms/MCTS.txt";
+        // filename = "TSDLAlgorithms/BFS.txt";
+        // filename = "TSDLAlgorithms/DFS.txt";
+        // filename = "TSDLAlgorithms/BestFirstSearch.txt";
+    	// filename = "TSDLAlgorithms/MCTS.txt";
         algo = new GTSAlgo(filename);
     }
 
