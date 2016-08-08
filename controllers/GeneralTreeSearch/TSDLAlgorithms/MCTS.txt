@@ -2,7 +2,7 @@ Exploration: HIGHUCT
 Expansion: RANDOM
 Removal: NO
 Simulation: RANDOM
-Evaluation: WINLOSSPOINTS
+Evaluation: STATEHEURISTIC
 Backpropagation: INCREMENT
 Selection: MOSTVISITS
 Depth Limit: -1

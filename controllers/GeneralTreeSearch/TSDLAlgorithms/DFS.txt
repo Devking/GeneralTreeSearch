@@ -2,8 +2,8 @@ Exploration: LAST
 Expansion: ALL
 Removal: YES
 Simulation: NONE
-Evaluation: POINTS
+Evaluation: WIN
 Backpropagation: MAX
-Selection: HIGH
-Depth Limit: 4
+Selection: HIGHREWARD
+Depth Limit: -1
 Simulation Limit: 0

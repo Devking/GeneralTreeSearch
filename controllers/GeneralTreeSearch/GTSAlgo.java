@@ -78,8 +78,6 @@ public class GTSAlgo {
         }
     }
 
-    //
-
     // Debugging, to make sure the right attributes were set
     void printParameters () {
         System.out.println("--------------------------------");
@@ -93,6 +91,22 @@ public class GTSAlgo {
         System.out.println("(8) Depth Limit         : " + depthLimit);
         System.out.println("(9) Simulation Limit         : " + simulationLimit);
         System.out.println("--------------------------------");
+    }
+    
+    //Debugging the actual search
+    void printTree(GTSNode root) {
+    	ArrayList<GTSNode> nodes = new ArrayList<GTSNode>();
+    	nodes.add(root);
+    	GTSNode currentNode = null;
+    	while(nodes.size() > 0){
+    		currentNode = nodes.remove(0);
+    		currentNode.printNode();
+    		for(int i=0; i<currentNode.children.length; i++){
+    			if(currentNode.children[i] != null){
+    				nodes.add(currentNode.children[i]);
+    			}
+    		}
+    	}
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +150,7 @@ public class GTSAlgo {
         int nodeIndex = -1;
         GTSNode currentNode = null;
         
+//        System.out.println("#################");
     	switch (exploration) {
 	        // First: Select the node at the front of the ArrayList
 	        // This mimics the behavior of a FIFO queue (for BFS)
@@ -149,6 +164,13 @@ public class GTSAlgo {
 	        case LAST:
 	            nodeIndex   = nodes.size() - 1;
 	            currentNode = nodes.get(nodeIndex);
+//	            if(currentNode.parent != null){
+//	            	for(int i=0; i<currentNode.parent.children.length; i++){
+//	            		if(currentNode == currentNode.parent.children[i]){
+//	            			System.out.println(i);
+//	            		}
+//	            	}
+//	            }
 	            break;
 	
 	        // High: Select the node that has the highest reward in the ArrayList
@@ -182,6 +204,37 @@ public class GTSAlgo {
 	                if (nodes.get(i).getReward() < lowReward) {
 	                    lowIndex = i;
 	                    lowReward = nodes.get(i).getReward();
+	                }
+	            }
+	            nodeIndex   = lowIndex;
+	            currentNode = nodes.get(nodeIndex);
+	            break;
+	        
+	        case MOSTDEPTH:
+	            highIndex = 0;
+	            highReward = nodes.get(highIndex).getDepth();
+	            for (int i = 0; i < nodes.size(); i++) {
+	                if (nodes.get(i).getDepth() > highReward) {
+	                    highIndex = i;
+	                    highReward = nodes.get(i).getDepth();
+	                }
+	            }
+	            nodeIndex   = highIndex;
+	            currentNode = nodes.get(nodeIndex);
+	            break;
+	
+	        // Low: Select the node that has the lowest reward in the ArrayList
+	        // This takes O(n) time to traverse the ArrayList to make a decision
+	        // Think about this one: won't low reward just pick the most recently added
+	        // node in the tree, since it's initialized to a reward of 0?
+	        //**// Need to initialize leaves with values!
+	        case LEASTDEPTH:
+	            lowIndex = 0;
+	            lowReward = nodes.get(lowIndex).getDepth();
+	            for (int i = 0; i < nodes.size(); i++) {
+	                if (nodes.get(i).getDepth() < lowReward) {
+	                    lowIndex = i;
+	                    lowReward = nodes.get(i).getDepth();
 	                }
 	            }
 	            nodeIndex   = lowIndex;
@@ -399,7 +452,7 @@ public class GTSAlgo {
 	            }
 	            break;
 	            
-	         // Use E-Greedy on Reward
+	        // Use E-Greedy on Reward
 	        case HIGHEGREEDYVISITS:
 	        	// Start traversal at the root node
 	            currentNode = nodes.get(0);
@@ -504,6 +557,112 @@ public class GTSAlgo {
 	                }
 	            }
 	            break;
+	            
+	            // Use E-Greedy on Reward
+	        case HIGHEGREEDYDEPTH:
+	        	// Start traversal at the root node
+	            currentNode = nodes.get(0);
+	            hasAllChildren = true;
+	            random = new Random();
+	            // In the situation where this node still has unexplored children,
+	            // we will select this node to expand
+	            for (int i = 0; i < currentNode.children.length; i++) {
+	                if (currentNode.children[i] == null) {
+	                    hasAllChildren = false;
+	                    break;
+	                }
+	            }
+	            // In the situation where all of the children have been explored
+	            // Use UCT to go down the tree until we get to a node without all children explored
+	            while (hasAllChildren && currentNode.children.length != 0) {
+	                // Find the best child to select from
+	                // this is the "uct" function in the SampleMCTS SingleTreeNode
+	                int bestIndex = 0;
+	                if(random.nextDouble() < egreedyEpsilon){
+	                    //Choose randomly
+	                    bestIndex = random.nextInt(currentNode.children.length);
+	
+	                }else{
+	                    //pick the best Q.
+	                    double bestValue = -Double.MAX_VALUE;
+	                    for (int i = 0; i < currentNode.children.length; i++) {
+	                        double hvVal = currentNode.children[i].getDepth();
+	                        hvVal = Utils.noise(hvVal, this.epsilon, random.nextDouble());     //break ties randomly
+	                        // small sampleRandom numbers: break ties in unexpanded nodes
+	                        if (hvVal > bestValue) {
+	                            bestIndex = i;
+	                            bestValue = hvVal;
+	                        }
+	                    }
+	                }
+	
+	                // Update currentNode to best child node
+	                currentNode = currentNode.children[bestIndex];
+	                // System.out.println("Updated currentNode to depth " + currentNode.getDepth());
+	
+	                // If the node we've selected by UCT has unexplored children, we break out of this
+	                // and move on, to the expansion phase
+	                for (int i = 0; i < currentNode.children.length; i++) {
+	                    if (currentNode.children[i] == null) {
+	                        hasAllChildren = false;
+	                        break;
+	                    }
+	                }
+	            }
+	            break;
+	            
+	         // Use E-Greedy on Reward
+	        case LOWEGREEDYDEPTH:
+	        	// Start traversal at the root node
+	            currentNode = nodes.get(0);
+	            hasAllChildren = true;
+	            random = new Random();
+	            // In the situation where this node still has unexplored children,
+	            // we will select this node to expand
+	            for (int i = 0; i < currentNode.children.length; i++) {
+	                if (currentNode.children[i] == null) {
+	                    hasAllChildren = false;
+	                    break;
+	                }
+	            }
+	            // In the situation where all of the children have been explored
+	            // Use UCT to go down the tree until we get to a node without all children explored
+	            while (hasAllChildren && currentNode.children.length != 0) {
+	                // Find the best child to select from
+	                // this is the "uct" function in the SampleMCTS SingleTreeNode
+	                int bestIndex = 0;
+	                if(random.nextDouble() < egreedyEpsilon){
+	                    //Choose randomly
+	                    bestIndex = random.nextInt(currentNode.children.length);
+	
+	                }else{
+	                    //pick the best Q.
+	                    double bestValue = Double.MAX_VALUE;
+	                    for (int i = 0; i < currentNode.children.length; i++) {
+	                        double hvVal = currentNode.children[i].getDepth();
+	                        hvVal = Utils.noise(hvVal, this.epsilon, random.nextDouble());     //break ties randomly
+	                        // small sampleRandom numbers: break ties in unexpanded nodes
+	                        if (hvVal < bestValue) {
+	                            bestIndex = i;
+	                            bestValue = hvVal;
+	                        }
+	                    }
+	                }
+	
+	                // Update currentNode to best child node
+	                currentNode = currentNode.children[bestIndex];
+	                // System.out.println("Updated currentNode to depth " + currentNode.getDepth());
+	
+	                // If the node we've selected by UCT has unexplored children, we break out of this
+	                // and move on, to the expansion phase
+	                for (int i = 0; i < currentNode.children.length; i++) {
+	                    if (currentNode.children[i] == null) {
+	                        hasAllChildren = false;
+	                        break;
+	                    }
+	                }
+	            }
+	            break;
 	
 	        // Default: Select first node from frontier
 	        default:
@@ -536,7 +695,7 @@ public class GTSAlgo {
     	ArrayList<GTSNode> results = new ArrayList<GTSNode>();
     	
 		// If the node is a valid game state within the depth limit, do expansion
-		if (currentNode.getDepth() < depthLimit && !currentNode.thisState.isGameOver()) {
+		if ((currentNode.getDepth() < depthLimit || depthLimit < 0) && !currentNode.thisState.isGameOver()) {
 			switch (expansion) {
 				// All: Add all of the children of this node to the frontier
 				// This is the behavior you want in DFS/BFS/A*
@@ -636,12 +795,13 @@ public class GTSAlgo {
 					int finalDepth = 0;
 					Random random = new Random();
 					while (finalDepth < simulationLimit &&
-						elapsedTimer.remainingTimeMillis() > simulationTimeLimit && !finalState.isGameOver()) {
+						elapsedTimer.remainingTimeMillis() > simulationTimeLimit && 
+						!finalState.isGameOver()) {
 						int actionNo = random.nextInt(finalState.getAvailableActions().size());
 						finalState.advance(finalState.getAvailableActions().get(actionNo));
 						finalDepth++;
 					}
-					// System.out.println("Simulation to depth: " + finalDepth);
+//					System.out.println("Simulation to depth: " + finalDepth + currentNode.depth);
 					break;
 				case SAME:
 					finalDepth = 0;
@@ -735,31 +895,36 @@ public class GTSAlgo {
 	// 6. Backprop: High, Low, Increment
 	///////////////////////////////////////////////////////////////////////////////////
     void backprop(ArrayList<GTSNode> expandedNodes, ArrayList<Double> rewards){
-    	for(int i=0; i<rewards.size(); i++){
+    	for(int i=0; i<expandedNodes.size(); i++){
     		GTSNode currentNode = expandedNodes.get(i);
-    		double reward = rewards.get(i);
-    		// Backprop all the way to the root
-			while (currentNode.parent != null) {
-				switch (backprop) {
-					// High: Propagate the max reward seen so far
-					case MAX:
-						currentNode.setRewardMax(reward);
-						break;
-					
-					// Increment: Add reward to each node as you go up the tree
-					case INCREMENT:
-						currentNode.incrementReward(reward);
-						break;
-					
-					// Low: Propagate the lowest reward seen so far
-					case MIN:
-						currentNode.setRewardMin(reward);
-						break;
-					
-					// Default: Propagate Max
-					default:
-						currentNode.setRewardMax(reward);
-						break;
+    		double reward = 0;
+    		if(rewards.size() > i){
+	    		reward = rewards.get(i);
+    		}
+	    	// Backprop all the way to the root
+			while (currentNode != null) {
+				if(rewards.size() > i){
+					switch (backprop) {
+						// High: Propagate the max reward seen so far
+						case MAX:
+							currentNode.setRewardMax(reward);
+							break;
+						
+						// Increment: Add reward to each node as you go up the tree
+						case INCREMENT:
+							currentNode.incrementReward(reward);
+							break;
+						
+						// Low: Propagate the lowest reward seen so far
+						case MIN:
+							currentNode.setRewardMin(reward);
+							break;
+						
+						// Default: Propagate Max
+						default:
+							currentNode.setRewardMax(reward);
+							break;
+					}
 				}
 				currentNode.incrementVisitCount();
 				currentNode = currentNode.parent;
@@ -897,6 +1062,9 @@ public class GTSAlgo {
                 break;
         }
 
+        System.out.println("------------------");
+        this.printTree(root);
+        System.out.println("------------------");
         return root.thisState.getAvailableActions().get(action);
     }
 
