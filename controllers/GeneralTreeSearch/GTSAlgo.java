@@ -1036,7 +1036,7 @@ public class GTSAlgo {
             
             // Highest UCT: Select the node that's has the highest UCT value
             case LOWUCT:
-            	double lowUCT = -Double.MAX_VALUE;
+            	double lowUCT = Double.MAX_VALUE;
                 for (int i = 0; i < root.children.length; i++) {
                     if (root.children[i] != null) {
                     	double reward = root.children[i].getReward();
@@ -1046,7 +1046,7 @@ public class GTSAlgo {
                         double weight = Math.sqrt(2);
                         double uct = (reward) / (childVisits + this.epsilon) +
                                            weight * Math.sqrt(Math.log(totalVisits + 1)/(childVisits + this.epsilon));
-                        if(lowUCT < uct){
+                        if(lowUCT > uct){
                         	action = i;
                         	lowUCT = uct;
                         }

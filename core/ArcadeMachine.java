@@ -87,7 +87,12 @@ public class ArcadeMachine
         //Finally, when the game is over, we need to tear the player down.
         ArcadeMachine.tearPlayerDown(player);
 
-        return new GameResult(toPlay.getWinner() == WINNER.PLAYER_WINS, score, toPlay.getGameTick(), false);
+        boolean invalid = false;
+        if(score < -200){
+        	invalid = true;
+        }
+        
+        return new GameResult(toPlay.getWinner() == WINNER.PLAYER_WINS, score, toPlay.getGameTick(), invalid);
     }
 
 

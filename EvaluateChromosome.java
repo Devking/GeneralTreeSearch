@@ -23,7 +23,6 @@ public class EvaluateChromosome {
         int seed = new Random().nextInt();
         int levelIdx = 0;
         String agentName = "controllers.GeneralTreeSearch.Agent";
-        
 		
 		int numberOfRepetition = Integer.parseInt(args[0]); 
 		controllers.GeneralTreeSearch.Agent.filename = parameterPath + "generation_" + args[1] + 
@@ -35,7 +34,7 @@ public class EvaluateChromosome {
 		for(int i=0; i< numberOfRepetition; i++){
 			GameResult r = ArcadeMachine.runOneGame(gameFile, levelFile, visuals, agentName, recordActionsFile, seed);
 			if(r.invalid){
-				numberOfRepetition += 1;
+				i -= 1;
 			}
 			else{
 				results.add(r);
@@ -43,11 +42,14 @@ public class EvaluateChromosome {
 		}
 		
 		try {
-			PrintWriter file = new PrintWriter(resultPath + "generation_" + args[1] + "/results_" + args[2] + ".csv", "UTF-8");
+			PrintWriter file = new PrintWriter(resultPath + "generation_" + args[1] + "/chromosome_" + args[2] + ".csv", "UTF-8");
 			file.println("Run,\tWin,\tScore,\tTime");
 			double totalWins = 0;
 			double totalScore = 0;
 			double totalTime = 0;
+			double sqrWins = 0;
+			double sqrScore = 0;
+			double sqrTime = 0;
 			for(int i=0; i< results.size(); i++){
 				double win = 0;
 				if(results.get(i).win){
@@ -56,10 +58,21 @@ public class EvaluateChromosome {
 				totalWins += win;
 				totalScore += results.get(i).score;
 				totalTime += results.get(i).time;
+				sqrWins += Math.pow(win, 2);
+				sqrScore += Math.pow(results.get(i).score, 2);
+				sqrTime += Math.pow(results.get(i).time, 2);
 				file.println((i + 1) + ",\t" + win + ",\t" + results.get(i).score + ",\t" + results.get(i).time);
 			}
-			file.println("#,\t" + (totalWins / results.size()) + ",\t" + 
-					(totalScore / results.size()) + ",\t" + (totalTime / results.size()));
+			totalWins /= results.size();
+			totalScore /= results.size();
+			totalTime /= results.size();
+			sqrWins = Math.sqrt(sqrWins / results.size() - Math.pow(totalWins, 2));
+			sqrScore = Math.sqrt(sqrScore / results.size() - Math.pow(totalScore, 2));
+			sqrTime = Math.sqrt(sqrTime / results.size() - Math.pow(totalTime, 2));
+			
+			file.println("");
+			file.println("average,\t" + totalWins + ",\t" + totalScore + ",\t" + totalTime);
+			file.println("std,\t" + sqrWins + ",\t" + sqrScore + ",\t" + sqrTime);
 			file.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
