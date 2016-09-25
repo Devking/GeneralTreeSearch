@@ -1,8 +1,8 @@
-Exploration: FIRST
+Exploration: HIGHREWARD
 Expansion: ALL
 Removal: YES
 Simulation: NONE
-Evaluation: WIN
+Evaluation: WINLOSSPOINTS
 Backpropagation: MAX
 Selection: HIGHREWARD
 Depth Limit: -1

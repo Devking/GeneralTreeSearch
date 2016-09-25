@@ -1,8 +1,9 @@
-Exploration: UCT
+Exploration: HIGHUCT
 Expansion: RANDOM
 Removal: NO
 Simulation: RANDOM
-Evaluation: WINLOSSPOINTS
+Evaluation: STATEHEURISTIC
 Backpropagation: INCREMENT
 Selection: MOSTVISITS
-Depth Limit: 10
+Depth Limit: -1
+Simulation Limit: 10

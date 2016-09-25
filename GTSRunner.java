@@ -17,10 +17,9 @@ public class GTSRunner {
 
         //Available games:
         String gamesPath = "examples/gridphysics/";
-        String games[] = new String[]{};
-
+        
         //Training Set 1 (2015; CIG 2014)
-        games = new String[]{"aliens", "boulderdash", "butterflies", "chase", "frogs",
+        String[] games = new String[]{"aliens", "boulderdash", "butterflies", "chase", "frogs",
                  "missilecommand", "portals", "sokoban", "survivezombies", "zelda"};
 
         //Training Set 2 (2015; Validation CIG 2014)
@@ -45,7 +44,7 @@ public class GTSRunner {
 
 
         //Other settings
-        boolean visuals = true;
+        boolean visuals = false;
         String recordActionsFile = null; //where to record the actions executed. null if not to save.
         int seed = new Random().nextInt();
 
@@ -60,6 +59,7 @@ public class GTSRunner {
 
         // 2. This plays a game in a level by the controller.
         // ArcadeMachine.runOneGame(game, level1, visuals, sampleMCTSController, recordActionsFile, seed);
+        controllers.GeneralTreeSearch.Agent.filename = "src/controllers/GeneralTreeSearch/TSDLAlgorithms/Butterfly.txt";
         ArcadeMachine.runOneGame(game, level1, visuals, GTSController, recordActionsFile, seed);
 
         // 3. This replays a game from an action file previously recorded

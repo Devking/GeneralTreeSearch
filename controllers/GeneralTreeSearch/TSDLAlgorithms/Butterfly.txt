@@ -1,0 +1,9 @@
+Exploration: LOWEGREEDYREWARD
+Expansion: RANDOM
+Removal: YES
+Simulation: SAME
+Evaluation: WINLOSSPOINTS
+Backpropagation: MAX
+Selection: LOWUCT
+Depth Limit: 6
+Simulation Limit: 8

@@ -2,11 +2,12 @@
 package controllers.GeneralTreeSearch;
 
 public class GTSParams {
-    public static enum EXPLORATION     { FIRST, HIGH, LOW, LAST, UCT };
-    public static enum EXPANSION       { ALL, FIRST, RANDOM };
+    public static enum EXPLORATION     { FIRST, LAST, HIGHREWARD, LOWREWARD, MOSTVISITS, LEASTVISITS, MOSTDEPTH, LEASTDEPTH,
+    	HIGHUCT, LOWUCT, HIGHEGREEDYREWARD, LOWEGREEDYREWARD, HIGHEGREEDYVISITS, LOWEGREEDYVISITS, HIGHEGREEDYDEPTH, LOWEGREEDYDEPTH };
     public static enum REMOVAL         { YES, NO };
-    public static enum SIMULATION      { RANDOM, NONE };
-    public static enum EVALUATION      { POINTS, WIN, WINLOSSPOINTS, DISTANCE };
-    public static enum BACKPROPAGATION { HIGH, LOW, INCREMENT };
-    public static enum SELECTION       { HIGH, LOW, MOSTVISITS };
+    public static enum EXPANSION       { ALL, FIRST, LAST, RANDOM };
+    public static enum SIMULATION      { RANDOM, SAME, NIL, NONE };
+    public static enum EVALUATION      { POINTS, WIN, WINLOSSPOINTS, STATEHEURISTIC };
+    public static enum BACKPROPAGATION { MAX, MIN, INCREMENT };
+    public static enum SELECTION       { HIGHREWARD, LOWREWARD, MOSTVISITS, LEASTVISITS, HIGHUCT, LOWUCT, RANDOM };
 }

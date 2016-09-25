@@ -1,14 +1,8 @@
 // Code written by Wells Lucas Santo
 package controllers.GeneralTreeSearch;
 
-import core.game.Observation;
 import core.game.StateObservation;
-import core.player.AbstractPlayer;
 import ontology.Types;
-import tools.ElapsedCpuTimer;
-
-import java.util.ArrayList;
-import java.io.*;
 
 // Nodes in the decision tree
 public class GTSNode {
@@ -19,7 +13,9 @@ public class GTSNode {
         totalValue = 0;
         visitCount = 0;
         parent = par;
-        children = new GTSNode [thisState.getAvailableActions().size()];
+        if(s != null){
+        	children = new GTSNode [thisState.getAvailableActions().size()];
+        }
         if (par != null)
             depth = par.depth+1;
         else
@@ -56,6 +52,30 @@ public class GTSNode {
 
     public void incrementReward (double reward) {
         totalValue += reward;
+    }
+    
+    public void printNode(){
+    	int numOfChildren = 0;
+    	for(int i=0; i<this.children.length; i++){
+    		if(this.children[i] != null){
+    			numOfChildren += 1;
+    		}
+    	}
+    	
+    	int actionNumber = -1;
+    	if(this.parent != null){
+    		for(int i=0; i<this.parent.children.length; i++){
+    			if(this.parent.children[i] == this){
+    				actionNumber = i;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	System.out.println("[Action: " + actionNumber + ", Visit Count: " + visitCount + ", Depth: " + 
+    			depth + ", Total Value: " + totalValue + ", Num of Children: " + 
+    			numOfChildren + ", isGameOver: " + thisState.isGameOver() + ", Score: " + 
+    			thisState.getGameScore() + "]");
     }
 
     public StateObservation thisState;
